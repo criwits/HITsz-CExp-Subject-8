@@ -1,7 +1,8 @@
 # depslib dependency file v1.0
-1605015267 source:d:\github\hitsz-cexp-subject-8\main.c
+1605016998 source:d:\github\hitsz-cexp-subject-8\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	<math.h>
+	<conio.h>
 

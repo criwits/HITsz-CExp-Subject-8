@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <conio.h>
 
 #define STU_MAX 30
 #define NAME_MAX 25
@@ -19,6 +20,7 @@ typedef struct database
 } DATABASE;
 
 /** 工具性函数区 **/
+/* 总分计算函数 */
 float GetTotal(float *array, int n)
 {
     int i;
@@ -28,21 +30,25 @@ float GetTotal(float *array, int n)
     return fTotal;
 }
 
+/* 平均分计算函数 */
 float GetAverage(float *array, int n)
 {
     return GetTotal(array, n) / n;
 }
 
+/* 升序排序函数 */
 _Bool Ascending(float a, float b)
 {
     return a < b;
 }
 
+/* 降序排序函数 */
 _Bool Descending(float a, float b)
 {
     return a > b;
 }
 
+/* 递归字母序排序函数 */
 void RecursionSortName(DATABASE *a, DATABASE *b, int step)
 {
     if (a->cName[step] < b->cName[step])
@@ -59,6 +65,7 @@ void RecursionSortName(DATABASE *a, DATABASE *b, int step)
 }
 
 /** 功能性函数区 **/
+/* 数据录入函数 */
 void InputRecord(DATABASE *data_list, int *stu_number, int *sub_number, int *is_recorded)
 {
     //判断是否已经录入过。
@@ -171,6 +178,7 @@ void InputRecord(DATABASE *data_list, int *stu_number, int *sub_number, int *is_
     return;
 }
 
+/* 列表打印函数 */
 void ListRecord(DATABASE *data_list, int stu_number, int sub_number, int is_recorded)
 {
     //检查是否已经录入。
@@ -201,6 +209,7 @@ void ListRecord(DATABASE *data_list, int stu_number, int sub_number, int is_reco
     return;
 }
 
+/* 计算单个科目总分和平均分函数 */
 void CalculateSingleCourseTAndA(DATABASE *data_list, int stu_number, int sub_number, int is_recorded)
 {
     if (!is_recorded)
@@ -223,6 +232,7 @@ void CalculateSingleCourseTAndA(DATABASE *data_list, int stu_number, int sub_num
     return;
 }
 
+/* 计算单个学生总分平均分函数 */
 void CalculateSingleStudentTAndA(DATABASE *data_list, int stu_number, int sub_number, int is_recorded)
 {
     if (!is_recorded)
@@ -241,6 +251,7 @@ void CalculateSingleStudentTAndA(DATABASE *data_list, int stu_number, int sub_nu
     return;
 }
 
+/* 按成绩升降序排序函数 */
 void SortByS(_Bool (*comparing)(float a, float b), DATABASE *data_list, int stu_number, int sub_number, int is_recorded)
 {
     if (!is_recorded)
@@ -272,6 +283,7 @@ void SortByS(_Bool (*comparing)(float a, float b), DATABASE *data_list, int stu_
     return;
 }
 
+/* 按学号升序排序函数 */
 void SortInAByID(DATABASE *data_list, int stu_number, int sub_number, int is_recorded)
 {
     if (!is_recorded)
@@ -280,9 +292,11 @@ void SortInAByID(DATABASE *data_list, int stu_number, int sub_number, int is_rec
         return;
     }
     int i, j;
+    //转移数据。
     DATABASE dataTemp;
     DATABASE dataSorted[stu_number + 1];
     memcpy(dataSorted, data_list, sizeof(dataSorted));
+    //排序。
     for (i = 1; i < stu_number; i++)
     {
         for (j = i + 1; j <= stu_number; j++)
@@ -298,7 +312,8 @@ void SortInAByID(DATABASE *data_list, int stu_number, int sub_number, int is_rec
     ListRecord(dataSorted, stu_number, sub_number, is_recorded);
     return;
 }
-//按姓名排序。
+
+/* 按学生姓名字母序升序排序函数 */
 void SortByName(DATABASE *data_list, int stu_number, int sub_number, int is_recorded)
 {
     if (!is_recorded)
@@ -313,6 +328,7 @@ void SortByName(DATABASE *data_list, int stu_number, int sub_number, int is_reco
     {
         for (j = i + 1; j <= stu_number; j++)
         {
+            //执行递归排序。
             RecursionSortName(&dataSorted[j], &dataSorted[i], 0);
         }
     }
@@ -320,6 +336,7 @@ void SortByName(DATABASE *data_list, int stu_number, int sub_number, int is_reco
     return;
 }
 
+/* 按学号查找函数 */
 void SearchByID(DATABASE *data_list, int stu_number, int sub_number, int is_recorded)
 {
     if (!is_recorded)
@@ -337,8 +354,10 @@ void SearchByID(DATABASE *data_list, int stu_number, int sub_number, int is_reco
         iIsScanf = scanf("%d", &iInputID);
     } while (!iIsScanf);
     int i, j;
+    //逐个查找。
     for (i = 1; i <= stu_number; ++i)
     {
+        //若发现存在这个学生。
         if (iInputID == data_list[i].iStudentID)
         {
             printf("[ INFO]Here is the result: \n");
@@ -356,6 +375,7 @@ void SearchByID(DATABASE *data_list, int stu_number, int sub_number, int is_reco
             printf("%-10.2f%-11.2f%-3d", GetTotal(data_list[i].fScore, sub_number), GetAverage(data_list[i].fScore, sub_number), data_list[i].iRanking);
             printf("\n");
             printf("\n[ INFO]Successfully listed the data of one student.\n\n");
+            //结束函数。
             return;
         }
     }
@@ -363,6 +383,7 @@ void SearchByID(DATABASE *data_list, int stu_number, int sub_number, int is_reco
     return;
 }
 
+/* 按姓名查找函数 */
 void SearchByName(DATABASE *data_list, int stu_number, int sub_number, int is_recorded)
 {
     if (!is_recorded)
@@ -383,6 +404,7 @@ void SearchByName(DATABASE *data_list, int stu_number, int sub_number, int is_re
     int i, j;
     for (i = 1; i <= stu_number; ++i)
     {
+        //如果找到。
         if (!strcmp(cInputName, data_list[i].cName))
         {
             printf("[ INFO]Here is the result: \n");
@@ -400,6 +422,7 @@ void SearchByName(DATABASE *data_list, int stu_number, int sub_number, int is_re
             printf("%-10.2f%-11.2f%-3d", GetTotal(data_list[i].fScore, sub_number), GetAverage(data_list[i].fScore, sub_number), data_list[i].iRanking);
             printf("\n");
             printf("\n[ INFO]Successfully listed the data of one student.\n\n");
+            //结束函数。
             return;
         }
     }
@@ -407,6 +430,7 @@ void SearchByName(DATABASE *data_list, int stu_number, int sub_number, int is_re
     return;
 }
 
+/* 统计分析函数 */
 void StatisticAnalysis(DATABASE *data_list, int stu_number, int sub_number, int is_recorded)
 {
     if (!is_recorded)
